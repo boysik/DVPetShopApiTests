@@ -78,7 +78,7 @@ public class TestPet {
     @Severity(SeverityLevel.CRITICAL)
     @Owner("Dmitry Trubin")
     public void testGetNonexistentPet() {
-        Response response = step("Отправить PUT запрос на обновление несуществующего питомца", () ->
+        Response response = step("Отправить GET запрос на получение информации о несуществующем питомце", () ->
                 given()
                         .contentType(ContentType.JSON)
                         .header("Accept", "application/json")
