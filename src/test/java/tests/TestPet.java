@@ -130,7 +130,7 @@ public class TestPet {
                     Pet createdPet = response.as(Pet.class);
                     assertEquals(pet.getId(), createdPet.getId(), "id питомца не совпадает с ожидаемым");
                     assertEquals(pet.getName(), createdPet.getName(), "имя питомца не совпадает с ожидаемым");
-                    assertEquals(pet.getStatus(), createdPet.getStatus(), "status питомца не совпадает с ожидаемым" + responseBody);
+                    assertEquals(pet.getStatus(), createdPet.getStatus(), "status питомца не совпадает с ожидаемым");
                 }
         );
     }
