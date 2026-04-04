@@ -99,7 +99,8 @@ public class TestPet {
     @CsvSource({
             "569, Nova, available",
             "570, Big, pending",
-            "571, Rocket, sold"
+            "571, Rocket, sold",
+            "572, Amigo, gifted"
     })
     @Feature("Pet")
     @Severity(SeverityLevel.CRITICAL)
@@ -124,13 +125,13 @@ public class TestPet {
                 assertEquals(200, response.getStatusCode(),
                         "Код ответа не совпал с ожидаемым. Ответ: " + responseBody)
         );
+
         step("Проверка параметров созданного питомца", () -> {
                     Pet createdPet = response.as(Pet.class);
-                    assertEquals(pet.getId(),createdPet.getId(),"id питомца не совпадает с ожидаемым");
-                    assertEquals(pet.getName(),createdPet.getName(),"имя питомца не совпадает с ожидаемым");
-                    assertEquals(pet.getStatus(),createdPet.getStatus(),"status питомца не совпадает с ожидаемым");
+                    assertEquals(pet.getId(), createdPet.getId(), "id питомца не совпадает с ожидаемым");
+                    assertEquals(pet.getName(), createdPet.getName(), "имя питомца не совпадает с ожидаемым");
+                    assertEquals(pet.getStatus(), createdPet.getStatus(), "status питомца не совпадает с ожидаемым" + responseBody);
                 }
-
         );
     }
 }
