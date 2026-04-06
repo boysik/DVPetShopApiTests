@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.Arrays;
+
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -93,5 +95,55 @@ public class TestPet {
                 assertEquals(404, response.getStatusCode(),
                         "Код ответа не совпал с ожидаемым. Ответ: " + responseBody)
         );
+    }
+
+    @ParameterizedTest(name = "Добавление питомца со статусом {2}")
+    @CsvSource({
+            "569, Nova, available",
+            "570, Big, pending",
+            "571, Rocket, sold",
+            "572, Amigo, gifted"
+    })
+    @Feature("Pet")
+    @Severity(SeverityLevel.CRITICAL)
+    @Owner("Dmitry Trubin")
+    public void testAddNewPet(int id, String name, String status) {
+        Pet pet = new Pet();
+        pet.setId(id);
+        pet.setName(name);
+        pet.setStatus(status);
+
+        Response response = step("Отправить POST запрос на добавление питомца", () ->
+                given()
+                        .contentType(ContentType.JSON)
+                        .header("Accept", "application/json")
+                        .body(pet)
+                        .when()
+                        .post(BASE_URL + "/pet"));
+
+        String responseBody = response.getBody().asString();
+
+        String array[] = {"available", "pending", "sold"};
+        boolean exists = Arrays.asList(array).contains(status);
+
+        if (exists) {
+            step("Проверить, что статус-код ответа == 200", () ->
+                    assertEquals(200, response.getStatusCode(),
+                            "Код ответа не совпал с ожидаемым. Ответ: " + responseBody)
+            );
+            step("Проверка параметров созданного питомца", () -> {
+                        Pet createdPet = response.as(Pet.class);
+                        assertEquals(pet.getId(), createdPet.getId(), "id питомца не совпадает с ожидаемым");
+                        assertEquals(pet.getName(), createdPet.getName(), "имя питомца не совпадает с ожидаемым");
+                        assertEquals(pet.getStatus(), createdPet.getStatus(), "status питомца не совпадает с ожидаемым");
+                    }
+            );
+        } else {
+            step("Проверить, что текст ответа 'Invalid pet status. Valid values: [available, pending, sold]'", () ->
+                    assertEquals("Invalid pet status. Valid values: [available, pending, sold]", responseBody,
+                            "Текст ответа не совпал с ожидаемым. Ответ: " + responseBody)
+            );
+        }
+
     }
 }
